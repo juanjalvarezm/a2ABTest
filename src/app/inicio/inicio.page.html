@@ -1,0 +1,25 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>A2 - A & B</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="mesasSelected">
+    <ion-item *ngFor="let mesa of tabsArr[indice].mesas; let item = index">
+      <ion-button class="buttonMesas" color="dark" (click)="tableSelected(item)">Mesa: {{mesa.id}}</ion-button>
+    </ion-item>
+  </div>
+  
+  <div *ngIf="!mesasSelected">
+    <h2 id="helpMessage"> Debes seleccionar una de las Areas! <ion-icon name="arrow-round-down"></ion-icon></h2>
+  </div>
+
+  <ion-tabs>
+    <ion-tab-bar slot="bottom" color="dark">
+      <ion-tab-button (click)="goToTable(item)" *ngFor="let tab of tabsArr; let item = index">
+        <ion-label class="labelAreas">{{ tab.name }}</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+</ion-content>

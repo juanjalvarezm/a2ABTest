@@ -1,14 +1,29 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="dark">
     <ion-title>
-      Ionic Blank
+      Inicia Sesion
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-  <div class="ion-padding">
-    The world is your oyster.
-    <p>If you get lost, the <a target="_blank" rel="noopener" href="https://ionicframework.com/docs/">docs</a> will be your guide.</p>
+  <div id="containerLogin">
+    <img src="../../assets/loginBackground.jpg" width="100%"alt="">
   </div>
+
+  <ion-item>
+    <ion-label position="floating">Usuario: </ion-label>
+    <ion-input type="text" color="dark"></ion-input>
+  </ion-item>
+
+  <ion-item>
+    <ion-label position="floating">Contraseña: </ion-label>
+    <ion-input type="text" color="dark"></ion-input>
+  </ion-item>
+
+  <ion-button expand="block" color="dark">Iniciar Sesion</ion-button> 
 </ion-content>
+
+<ion-footer textAlign="center">
+    <small>All Rights Reserved from a2 Softway 2019/2020. Juan Alvarez</small>
+</ion-footer>

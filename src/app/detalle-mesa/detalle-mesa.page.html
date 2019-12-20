@@ -1,0 +1,69 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    
+    <ion-title>Mesa {{data.id}}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <img src="../../assets/user.png" id="imageClient" width="25%" alt="">
+    <p id="clientName">{{ data.clientes }}</p>
+
+  <div id="facturaContainer">
+    <ion-slides>
+      
+      <ion-slide>
+        <ion-card>
+          <div id="containerTotal">
+            <h2>TOTAL</h2>
+            <p>$ {{ data.totalUSD }}</p>
+            <p>Bs {{ data.totalBS }}</p>
+          </div>
+          <ion-card-header>
+            <ion-card-title>CUENTA MESA {{data.id}} - {{ data.area }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content>                     
+            <ion-grid id="containerGrid">
+              <ion-row>
+                <ion-col size="2" class="header">
+                  #
+                </ion-col>
+                <ion-col size="4" class="header">
+                  ITEM
+                </ion-col>
+                <ion-col size="2" class="header">
+                  <ion-icon name="mail"></ion-icon>
+                </ion-col>
+                <ion-col size="4" class="header">
+                  PRECIO
+                </ion-col>
+              </ion-row>
+
+              <ion-row>
+                <ion-col size="2" class="body">
+                  1
+                </ion-col>
+                <ion-col size="4" class="body">
+                  Ensalada Cesar
+                </ion-col>
+                <ion-col size="2" class="body">
+                  <ion-icon name="checkmark"></ion-icon>
+                </ion-col>
+                <ion-col size="4" class="body">
+                  200.000
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </ion-card-content>
+          <ion-button expand="block"> <ion-icon name="add-circle-outline"></ion-icon> Añadir Producto</ion-button>
+        </ion-card>
+
+      </ion-slide>
+
+    </ion-slides>
+  </div>
+</ion-content>
