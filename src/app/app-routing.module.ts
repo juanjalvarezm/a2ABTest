@@ -16,6 +16,21 @@ const routes: Routes = [
     },
     loadChildren: () => import('./detalle-mesa/detalle-mesa.module').then( m => m.DetalleMesaPageModule)
   },
+  {
+    path: 'productos',
+    loadChildren: () => import('./productos/productos.module').then( m => m.ProductosPageModule)
+  },
+  {
+    path: 'productos/:id',
+    resolve:{
+      mesaDetalle: ResolverService
+    },
+    loadChildren: () => import('./productos/productos.module').then( m => m.ProductosPageModule)
+  },
+  {
+    path: 'productos-modal',
+    loadChildren: () => import('./productos-modal/productos-modal.module').then( m => m.ProductosModalPageModule)
+  },
 ];
 
 @NgModule({

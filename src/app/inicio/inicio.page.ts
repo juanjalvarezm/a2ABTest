@@ -63,6 +63,7 @@ export class InicioPage implements OnInit {
     this.mesasSelected = true;
     this.tabsArr[_number].mesas.length = 0;
     //Query, de la coleccion de mesas para el area seleccionada
+    
     this.db.collection('areas/' + this.tabsArr[_number].id + "/mesas").snapshotChanges().subscribe(names => {
       names.map(name => {
         const data: mesas = name.payload.doc.data() as mesas;

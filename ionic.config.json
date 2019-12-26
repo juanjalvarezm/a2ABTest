@@ -1,5 +1,7 @@
 {
   "name": "a2-AB",
-  "integrations": {},
+  "integrations": {
+    "cordova": {}
+  },
   "type": "angular"
 }

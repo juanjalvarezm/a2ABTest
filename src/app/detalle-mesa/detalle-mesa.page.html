@@ -3,7 +3,6 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    
     <ion-title>Mesa {{data.id}}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -19,8 +18,8 @@
         <ion-card>
           <div id="containerTotal">
             <h2>TOTAL</h2>
-            <p>$ {{ data.totalUSD }}</p>
-            <p>Bs {{ data.totalBS }}</p>
+            <p>$ {{ getTotal() / tasaUSD }}</p>
+            <p>Bs {{ getTotal() }}</p>
           </div>
           <ion-card-header>
             <ion-card-title>CUENTA MESA {{data.id}} - {{ data.area }}</ion-card-title>
@@ -43,23 +42,26 @@
                 </ion-col>
               </ion-row>
 
-              <ion-row>
+              <ion-row *ngFor="let p of cart">
                 <ion-col size="2" class="body">
-                  1
+                 {{p.cantidad}}
                 </ion-col>
                 <ion-col size="4" class="body">
-                  Ensalada Cesar
+                  {{p.nombre}}
                 </ion-col>
                 <ion-col size="2" class="body">
-                  <ion-icon name="checkmark"></ion-icon>
+                  <ion-icon *ngIf="p.estado" name="checkmark"></ion-icon>
                 </ion-col>
                 <ion-col size="4" class="body">
-                  200.000
+                  {{p.precio * p.cantidad}}
                 </ion-col>
               </ion-row>
             </ion-grid>
+
+            
           </ion-card-content>
-          <ion-button expand="block"> <ion-icon name="add-circle-outline"></ion-icon> Añadir Producto</ion-button>
+          <ion-button expand="block" (click)="goToProducts()"> <ion-icon name="add-circle-outline" ></ion-icon> Producto </ion-button>
+          <ion-button color="success"expand="block" (click)="enviarPedido()"> <ion-icon name="send" ></ion-icon> Enviar </ion-button>
         </ion-card>
 
       </ion-slide>

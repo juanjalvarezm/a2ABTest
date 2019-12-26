@@ -15,6 +15,7 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { ProductosModalPageModule } from './productos-modal/productos-modal.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -25,7 +26,9 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireAuthModule,
     AngularFireDatabaseModule,
-    AngularFirestoreModule],
+    AngularFirestoreModule,
+    ProductosModalPageModule
+  ],
   providers: [
     StatusBar,
     SplashScreen,
