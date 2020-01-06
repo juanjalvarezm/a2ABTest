@@ -22,7 +22,7 @@
             <p>Bs {{ getTotal() }}</p>
           </div>
           <ion-card-header>
-            <ion-card-title>CUENTA MESA {{data.id}} - {{ data.area }}</ion-card-title>
+            <ion-card-title>CUENTA MESA {{data.id}}</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>                     
@@ -61,7 +61,7 @@
             
           </ion-card-content>
           <ion-button expand="block" (click)="goToProducts()"> <ion-icon name="add-circle-outline" ></ion-icon> Producto </ion-button>
-          <ion-button color="success"expand="block" (click)="enviarPedido()"> <ion-icon name="send" ></ion-icon> Enviar </ion-button>
+          <ion-button color="success"expand="block" (click)="getEstadoMesa()"> <ion-icon name="send" ></ion-icon> Enviar </ion-button>
         </ion-card>
 
       </ion-slide>

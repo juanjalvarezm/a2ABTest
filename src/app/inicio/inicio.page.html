@@ -5,7 +5,13 @@
 </ion-header>
 
 <ion-content>
-  <div *ngIf="mesasSelected">
+  <div>
+    <ion-item *ngFor = "let m of menus">
+      {{ m.menu_id }} 
+      {{ m.nombre }}
+    </ion-item> 
+  </div>
+  <!--<div *ngIf="mesasSelected">
     <ion-item *ngFor="let mesa of tabsArr[indice].mesas; let item = index">
       <ion-button class="buttonMesas" color="dark" (click)="tableSelected(item)">Mesa: {{mesa.id}}</ion-button>
     </ion-item>
@@ -21,5 +27,5 @@
         <ion-label class="labelAreas">{{ tab.name }}</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
-  </ion-tabs>
+  </ion-tabs>-->
 </ion-content>

@@ -4,6 +4,12 @@ import { productos, ProductServicesService } from '../services/product-services.
 import { DataService } from '../services/data.service';
 import { AngularFirestore } from '@angular/fire/firestore';
 
+
+interface detalleMesa{
+  id: number;
+  estado: boolean;
+}
+
 @Component({
   selector: 'app-detalle-mesa',
   templateUrl: './detalle-mesa.page.html',
@@ -14,6 +20,8 @@ export class DetalleMesaPage implements OnInit {
   data : any;
   cart: productos[];
   tasaUSD: number;
+  productsArr: any  = new Array();
+  detalleMesaArr: any = new Array();
   constructor(
     private pServices :  ProductServicesService, 
     private route: ActivatedRoute, 
@@ -32,25 +40,27 @@ export class DetalleMesaPage implements OnInit {
     this.dataService.setData(0, this.data);
     this.router.navigateByUrl('productos/' + 0);
   }
-  enviarPedido(){
-    for(let i = 0; i < this.cart.length; i++){
-      if (this.cart[i].estado == false){
-        this.cart[i].estado = true;
-        this.db
-        .collection('areas')
-        .doc('fGZyfhMU85Di38gbQO6o')
-        .collection('mesas')
-        .doc('1')
-        .collection('cuentas')
-        .doc('1')
-        .collection('productos')
-        .add(this.cart[i]);
-      }
-    }
-  }
   getTotal(){
     return this.cart.reduce( (i,j) => i + j.precio * j.cantidad, 0 );
   }
+  getEstadoMesa(){
+    console.log("DATA ID: "+this.data.id);
+    this.db.collection('menu').doc(this.data.id).get().toPromise().then(
+      function(doc){
+        if(doc.exists){
+          console.log("Document Data: ", doc.data());
+        }//doc if
+        else{
+          console.log("No such document!");
+        }//doc else
+      }//doc function
+    )//then parentesis
+    .catch( 
+      function(err){
+        console.log("ERROR GETTING DOCUMENT!: ", err);
+      }
+    )//catch final
+  }//final metodo
 
 
 }

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DataService } from '../services/data.service';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { menu, productos, DatabaseService } from '../services/database.service';
 
 interface areasPreparacion {
   id: any;
@@ -17,7 +16,6 @@ interface mesas {
   area: any;
   totalBS: any;
   totalUSD: any;
-
 }
 @Component({
   selector: 'app-inicio',
@@ -26,20 +24,42 @@ interface mesas {
 })
 export class InicioPage implements OnInit {
   //Variables
-  tabsArr: any = new Array;
-  indice: any = 0;
-  mesasSelected = false;
-  constructor(private router: Router,
+  menus         : menu[]       = [];
+  productos     : productos[]  = [];
+
+  constructor(
+    private router     : Router,
     private dataService: DataService,
-    private db: AngularFirestore,
-    public afAuth: AngularFireAuth
+    private db         : DatabaseService
   ) { }
 
   ngOnInit() {
-    this.getAreaPreparacion();
+    this.db.getDatabaseState().subscribe(
+      ready => {
+        if(ready){
+        
+          this.db.getMenus().subscribe(
+            menu =>{
+              console.log("Menus: ", menu);
+              this.menus = menu;
+            }//Final Menu
+          )//Final MenuSubscribe
+          
+          this.db.getProductos().subscribe(
+            productos => {
+              console.log("Productos: ", productos);
+              this.productos = productos
+            }//productos final
+          )//subscribe final
+
+        }//Final if
+
+      }//Final Ready
+    )//Final subscribe
   }
 
-  getAreaPreparacion() {
+
+  /*getAreaPreparacion() {
     this.db.collection('areas').snapshotChanges().subscribe(names => {
       names.map(name => {
         const data: areasPreparacion = name.payload.doc.data() as areasPreparacion;
@@ -68,12 +88,12 @@ export class InicioPage implements OnInit {
       names.map(name => {
         const data: mesas = name.payload.doc.data() as mesas;
         data.id = name.payload.doc.id;
-        data.area = this.tabsArr[_number].name;
+        data.area = this.tabsArr[_number].id;
         this.tabsArr[_number].mesas.push(data);
       });
       console.log(this.tabsArr[_number].mesas);
     });
-  }
+  }*/
 
 
 }
