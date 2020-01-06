@@ -56,6 +56,11 @@ export class DatabaseService {
   
   menus     = new BehaviorSubject([]);
   productos = new BehaviorSubject([]);
+  clientes  = new BehaviorSubject([]);
+  areas     = new BehaviorSubject([]);
+  usuarios  = new BehaviorSubject([]);
+  mesas     = new BehaviorSubject([]);
+  cuentas   = new BehaviorSubject([]);
   //soemthing like above   = new BehaviorSubject([]);
 
   constructor(
@@ -97,12 +102,6 @@ export class DatabaseService {
   getDatabaseState() {
     return this.dbReady.asObservable();
   }
-  getMenus(): Observable<menu[]>{
-    return this.menus.asObservable();
-  }
-  getProductos(): Observable<productos[]>{
-    return this.productos.asObservable();
-  }
 
   //***********Menus************** */
   loadMenus(){
@@ -123,7 +122,6 @@ export class DatabaseService {
       });//then final
 
   }//loadMenus final (function)
-
   getMenu(menu_id){
     return this.database.executeSql('SELECT * FROM menus WHERE menu_id = ? ', [menu_id]).then( 
       data => {
@@ -133,6 +131,9 @@ export class DatabaseService {
           descripcion : data.rows.item(0).descripcion
         }//Final Return
     });//Final Then
+  }
+  getMenus(): Observable<menu[]>{
+    return this.menus.asObservable();
   }
   //***********Menus************** */
 
@@ -170,6 +171,9 @@ export class DatabaseService {
         }//Final Return
     });//Final Then
   }
+  getProductos(): Observable<productos[]>{
+    return this.productos.asObservable();
+  }
   //***********PRODUCTOS************** */
 
   //***********CLIENTES************** */
@@ -199,6 +203,9 @@ export class DatabaseService {
               nombre      : data.rows.item(0).nombre
         }//Final Return
     });//Final Then
+  }
+  getClientes(): Observable<clientes[]>{
+    return this.clientes.asObservable();
   } 
   //***********CLIENTES************** */
   
@@ -222,7 +229,7 @@ export class DatabaseService {
 
   }//loadAreas final (function)
 
-  getAreas(areas_id){
+  getArea(areas_id){
     return this.database.executeSql('SELECT * FROM areas WHERE areas_id = ? ', [areas_id]).then( 
       data => {
         return {
@@ -231,6 +238,9 @@ export class DatabaseService {
               imagen      : data.rows.item(0).imagen
         }//Final Return
     });//Final Then
+  } 
+  getAreas(): Observable<areas[]>{
+    return this.areas.asObservable();
   } 
   //***********AREAS************** */
 
@@ -254,7 +264,7 @@ export class DatabaseService {
 
   }//loadUsuarios final (function)
 
-  getUsuarios(usuarios_id){
+  getUsuario(usuarios_id){
     return this.database.executeSql('SELECT * FROM usuarios WHERE usuarios_id = ? ', [usuarios_id]).then( 
       data => {
         return {
@@ -263,6 +273,9 @@ export class DatabaseService {
           nombre      : data.rows.item(0).nombre
         }//Final Return
     });//Final Then
+  } 
+  getUsuarios(): Observable<usuarios[]>{
+    return this.usuarios.asObservable();
   } 
   //***********USUARIOS************** */
 
@@ -289,7 +302,7 @@ export class DatabaseService {
 
   }//loadMesas final (function)
 
-  getMesas(mesas_id){
+  getMesa(mesas_id){
     return this.database.executeSql('SELECT * FROM mesas WHERE mesas_id = ? ', [mesas_id]).then( 
       data => {
         return {
@@ -301,6 +314,9 @@ export class DatabaseService {
           menus_id   : data.row.item(0).menus_id
         }//Final Return
     });//Final Then
+  } 
+  getMesas(): Observable<mesas[]>{
+    return this.mesas.asObservable();
   } 
   //***********MESAS************** */
 
@@ -327,7 +343,7 @@ export class DatabaseService {
 
   }//loadCuentas final (function)
 
-  getCuentas(cuentas_id){
+  getCuenta(cuentas_id){
     return this.database.executeSql('SELECT * FROM cuentas WHERE cuentas_id = ? ', [cuentas_id]).then( 
       data => {
         return {
@@ -339,6 +355,9 @@ export class DatabaseService {
           clientes_id  : data.row.items(0).clientes_id
         }//Final Return
     });//Final Then
+  } 
+  getCuentas(): Observable<cuentas[]>{
+    return this.cuentas.asObservable();
   } 
   //***********CUENTAS************** */
 }
