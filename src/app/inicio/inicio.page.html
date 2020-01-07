@@ -12,9 +12,9 @@
     </ion-item> 
   </div>-->
   <div *ngIf="mesasSelected">
-    <ion-item *ngFor="let mesa of mesas; let item = index" [routerLink]="['/', 'detalle-mesa', 'mesa.id']">
+    <ion-item *ngFor="let mesa of mesas" [routerLink]="['/', 'detalle-mesa', 'mesa.id']">
       <ion-label>
-        <h2>Mesa {{mesa.id}}</h2>
+        <h2>Mesa {{mesa.mesas_id}}</h2>
       </ion-label>
     </ion-item>
   </div>
@@ -25,8 +25,8 @@
 
   <ion-tabs>
     <ion-tab-bar slot="bottom" color="dark">
-      <ion-tab-button (click)="goToTable(item)" *ngFor="let tab of tabsArr; let item = index">
-        <ion-label class="labelAreas">{{ tab.name }}</ion-label>
+      <ion-tab-button (click)="goToArea(item)" *ngFor="let area of areas; let item = index">
+        <ion-label class="labelAreas">{{ area.nombre }}</ion-label>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>

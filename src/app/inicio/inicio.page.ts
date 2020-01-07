@@ -12,7 +12,7 @@ export class InicioPage implements OnInit {
   //Variables
   areas         : areas[] = [];
   mesas         : mesas[] = [];
-
+  mesasSelected : boolean = false;
   constructor(
     private router     : Router,
     private dataService: DataService,
@@ -20,7 +20,7 @@ export class InicioPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.db.getDatabaseState().subscribe(
+     this.db.getDatabaseState().subscribe(
       ready => {   
         if(ready){  //Sabemos que ya la base de datos esta lista para extraer datos.
           this.db.getAreas().subscribe(   //Datos de las areas de mesa.
@@ -29,19 +29,25 @@ export class InicioPage implements OnInit {
               this.areas = area;
             }//Final Menu
           )//Final MenuSubscribe
-          
-          this.db.getMesas().subscribe(//Datos de las mesas que existen en el restaurant.
-            mesas => {
-              console.log("Mesas: ", mesas);//Debug
-              this.mesas = mesas
-            }//productos final
-          )//subscribe final
-
         }//Final if
-
       }//Final Ready
     )//Final subscribe
   }
+
+  /**
+   * 
+   * Este metodo toma el id del area seleccionada y lo pasa al query y selecciona las mesas que se encuentran en esa area
+   */
+  goToArea(id){
+    this.db.getMesasOfArea(id+1);
+    this.mesasSelected = true;
+    this.db.getMesasofAreaBS() .subscribe(
+      mesas => {
+        console.log("Mesas: ", mesas);
+        this.mesas = mesas;
+      }//Final Mesas
+    )//Final Subscribe
+  }//Final goToArea
 
 
 }
