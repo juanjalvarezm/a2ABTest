@@ -12,10 +12,12 @@
     </ion-item> 
   </div>-->
   <div *ngIf="mesasSelected">
-    <ion-item *ngFor="let mesa of mesas" [routerLink]="['/', 'detalle-mesa', 'mesa.id']">
-      <ion-label>
-        <h2>Mesa {{mesa.mesas_id}}</h2>
-      </ion-label>
+    <ion-item *ngFor="let mesa of mesas; let item = index">
+      <ion-button color="dark" (click)=goToMesa(item)>
+        <ion-label>
+          <h2>Mesa {{mesa.mesas_id}}</h2>
+        </ion-label>
+      </ion-button>
     </ion-item>
   </div>
   

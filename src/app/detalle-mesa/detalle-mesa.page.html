@@ -3,13 +3,13 @@
     <ion-buttons slot="start">
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title>Mesa {{data.id}}</ion-title>
+    <ion-title>Mesa {{data.mesas_id}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+    <p>{{data.nombre}}</p>
     <img src="../../assets/user.png" id="imageClient" width="25%" alt="">
-    <p id="clientName">{{ data.clientes }}</p>
 
   <div id="facturaContainer">
     <ion-slides>
@@ -22,7 +22,7 @@
             <p>Bs {{ getTotal() }}</p>
           </div>
           <ion-card-header>
-            <ion-card-title>CUENTA MESA {{data.id}}</ion-card-title>
+            <ion-card-title>CUENTA MESA {{data.mesas_id}}</ion-card-title>
           </ion-card-header>
 
           <ion-card-content>                     

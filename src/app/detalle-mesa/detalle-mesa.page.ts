@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { productos, ProductServicesService } from '../services/product-services.service';
 import { DataService } from '../services/data.service';
-import { AngularFirestore } from '@angular/fire/firestore';
 
 
 interface detalleMesa{
@@ -26,8 +25,7 @@ export class DetalleMesaPage implements OnInit {
     private pServices :  ProductServicesService, 
     private route: ActivatedRoute, 
     private router: Router,
-    private dataService: DataService,
-    private db: AngularFirestore) { }
+    private dataService: DataService) { }
 
   ngOnInit() {
     if (this.route.snapshot.data['mesaDetalle'] ){
@@ -44,22 +42,7 @@ export class DetalleMesaPage implements OnInit {
     return this.cart.reduce( (i,j) => i + j.precio * j.cantidad, 0 );
   }
   getEstadoMesa(){
-    console.log("DATA ID: "+this.data.id);
-    this.db.collection('menu').doc(this.data.id).get().toPromise().then(
-      function(doc){
-        if(doc.exists){
-          console.log("Document Data: ", doc.data());
-        }//doc if
-        else{
-          console.log("No such document!");
-        }//doc else
-      }//doc function
-    )//then parentesis
-    .catch( 
-      function(err){
-        console.log("ERROR GETTING DOCUMENT!: ", err);
-      }
-    )//catch final
+    console.log(this.data);
   }//final metodo
 
 

@@ -40,9 +40,9 @@ export interface mesas{
   mesas_id   : number;
   capacidad  : number;
   estado     : number;
-  usuarios_id: number;
-  areas_id   : number;
-  menus_id   : number;  
+  usuario    : string;
+  area       : string;
+  menu       : string;  
 }
 export interface cuentas{
   cuentas_id   : number;
@@ -90,16 +90,45 @@ export class DatabaseService {
   }
 
   seedDatabase() {
-    this.http.get('assets/seed.sql', { responseType: 'text'})  //Ingresamos Las tablas y datos dentro de la base de datos
+    this.http.get('assets/seed.sql', { responseType: 'text'})  //Ingresamos Las tablas
     .subscribe(sql => {
       this.sqlitePorter.importSqlToDb(this.database, sql)
         .then(_ => {
-                /**
-                 * Se debe hacer otro seed SQL para meter los inserts y el insert de estado se mete con el 
-                 * SEED anterior. cuando se meta este segundo lo que hara es actualizar el estado y colocarlo
-                 * en True. para asi chequearse y determinar si es necesario meter nuevamente la data a la 
-                 * Base de Datos.
-                 */
+
+                this.checkFlag().then(  //Chequea el flag a ver si esta en true o false para meter la data.
+                  flag => {
+                    if(flag.estado){
+                      console.log('Ya esta configurado'); ///Debug
+                      this.loadMenus();
+                      this.loadProductos();
+                      this.loadClientes();
+                      this.loadAreas();
+                      this.loadUsuarios();
+                      this.loadMesas();
+                      this.loadCuentas();
+                    }else{
+                      this.seedDATA(); //Ingresa la data.
+                    }//Final Else
+                  }//Fninal flag
+                )//Final Then(flag)
+
+
+              })//Final then(_)
+          this.dbReady.next(true);
+        });
+  }
+
+  getDatabaseState() { //Para conocer si la base de datos ya tiene tablas y datos.
+    return this.dbReady.asObservable();
+  }
+
+  seedDATA(){//Para ingresar la data.
+    this.http.get('assets/seed2.sql', {responseType: 'text'}) //Lee el seed2.sql (donde estan los inserts dentro de la carpeta assets).
+    .subscribe(
+      sql => {
+        this.sqlitePorter.importSqlToDb(this.database, sql) //dentro de la base de datos "this.database" ingresa el sql que acabamos de leer.
+        .then(_ => {
+                 //Aqui se cargan todos los datos de la base de datos al programa una vez ya son ingresados en la base de datos.
                   this.loadMenus();
                   this.loadProductos();
                   this.loadClientes();
@@ -107,15 +136,10 @@ export class DatabaseService {
                   this.loadUsuarios();
                   this.loadMesas();
                   this.loadCuentas();
-              })
-          this.dbReady.next(true);
-        });
+        })//Final Then (_)
+      }//Final Sql
+    )//Final Subscribe
   }
-
-  getDatabaseState() {
-    return this.dbReady.asObservable();
-  }
-
   
   /**********ESTADO ********** */
   checkFlag(){
@@ -323,7 +347,8 @@ export class DatabaseService {
 
   //***********MESAS************** */
   loadMesas(){
-    return this.database.executeSql('SELECT * FROM mesas', []).then(
+    var sql_sentence = "SELECT mesas.mesas_id, mesas.capacidad, mesas.estado, usuarios.nombre as usuario, areas.nombre as area, menus.nombre as menu FROM mesas INNER JOIN usuarios ON usuarios.usuarios_id = mesas.usuarios_id INNER JOIN areas    ON areas.areas_id = mesas.areas_id INNER JOIN menus    ON menus.menus_id = mesas.menus_id"
+    return this.database.executeSql(sql_sentence, []).then(
       data => {
         let mesas: mesas[] = [];
 
@@ -333,9 +358,9 @@ export class DatabaseService {
               mesas_id   : data.rows.item(i).mesas_id,
               capacidad  : data.rows.item(i).capacidad,
               estado     : data.rows.item(i).estado,
-              usuarios_id: data.rows.item(i).usuarios_id,
-              areas_id   : data.rows.item(i).areas_id,
-              menus_id   : data.rows.item(i).menus_id
+              usuario    : data.rows.item(i).usuario,
+              area       : data.rows.item(i).area,
+              menu       : data.rows.item(i).menu
             });//push final
           }//for final
         }//if final
@@ -345,21 +370,23 @@ export class DatabaseService {
   }//loadMesas final (function)
 
   getMesa(mesas_id){
-    return this.database.executeSql('SELECT * FROM mesas WHERE mesas_id = ?', [mesas_id]).then( 
+    var sql_sentence = "SELECT mesas.mesas_id, mesas.capacidad, mesas.estado, usuarios.nombre as usuario, areas.nombre as area, menus.nombre as menu FROM mesas INNER JOIN usuarios ON usuarios.usuarios_id = mesas.usuarios_id INNER JOIN areas    ON areas.areas_id = mesas.areas_id INNER JOIN menus    ON menus.menus_id = mesas.menus_id WHERE mesas_id = ?";
+    return this.database.executeSql(sql_sentence, [mesas_id]).then( 
       data => {
         return {
           mesas_id   : data.rows.item(0).mesas_id,
           capacidad  : data.rows.item(0).capacidad,
           estado     : data.rows.item(0).estado,
-          usuarios_id: data.rows.item(0).usuarios_id,
-          areas_id   : data.rows.item(0).areas_id,
-          menus_id   : data.rows.item(0).menus_id
+          usuario    : data.rows.item(0).usuario,
+          area       : data.rows.item(0).area,
+          menu       : data.rows.item(0).menu
         }//Final Return
     });//Final Then
   } 
 
-  getMesasOfArea(areas_id){
-    return this.database.executeSql('SELECT * FROM mesas WHERE areas_id = ?', [areas_id]).then(
+  getMesasOfArea(nombre_area){
+    var sql_sentence = "SELECT mesas.mesas_id, mesas.capacidad, mesas.estado, usuarios.nombre as usuario, areas.nombre as area, menus.nombre as menu FROM mesas INNER JOIN usuarios ON usuarios.usuarios_id = mesas.usuarios_id INNER JOIN areas    ON areas.areas_id = mesas.areas_id INNER JOIN menus    ON menus.menus_id = mesas.menus_id WHERE area = ?"
+    return this.database.executeSql(sql_sentence, [nombre_area]).then(
       data => {
         let mesasOfArea: mesas[] = [];
         if(data.rows.length > 0){
@@ -368,9 +395,9 @@ export class DatabaseService {
               mesas_id   : data.rows.item(i).mesas_id,
               capacidad  : data.rows.item(i).capacidad,
               estado     : data.rows.item(i).estado,
-              usuarios_id: data.rows.item(i).usuarios_id,
-              areas_id   : data.rows.item(i).areas_id,
-              menus_id   : data.rows.item(i).menus_id
+              usuario    : data.rows.item(i).usuario,
+              area       : data.rows.item(i).area,
+              menu       : data.rows.item(i).menu
             });//push final
           }//for final
         }
