@@ -14,12 +14,11 @@
       <ion-icon name="list-box"></ion-icon>
     </ion-fab-button>
   </ion-fab>
-
   <ion-grid>
     <ion-row>
       <ion-col size="4" size-sm *ngFor="let producto of productsArr">
         <div Class="fancybutton" (click)="addToCart(producto)">
-          <img [src]="producto.img"  scroll="false" width="100%">
+          <img [src]="producto.imagen"  scroll="false" width="100%">
           <p> {{producto.nombre}} </p >
         </div>
       </ion-col>

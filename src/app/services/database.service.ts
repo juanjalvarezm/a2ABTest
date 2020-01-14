@@ -52,6 +52,19 @@ export interface cuentas{
   mesas_id     : number;
   clientes_id  : number;
 }
+export interface cuentasProductos{
+  cuentas_id     : number;
+  producto_id    : number;
+  producto_nombre: string;
+  producto_precio: number;
+  cantidad       : number;  
+}
+export interface cuentasProductosRegular{
+  cuentas_productos_id,
+  cuentas_id,
+  productos_id,
+  cantidad: number
+}
 @Injectable({
   providedIn: 'root'
 })
@@ -60,15 +73,20 @@ export class DatabaseService {
   private dbReady : BehaviorSubject<boolean> = new BehaviorSubject(false);
   private flag    : flags //Para conocer si la app ya fue configurada con la base de datos.
   
-  menus       = new BehaviorSubject([]);
-  productos   = new BehaviorSubject([]);
-  clientes    = new BehaviorSubject([]);
-  areas       = new BehaviorSubject([]);
-  usuarios    = new BehaviorSubject([]);
-  mesas       = new BehaviorSubject([]);
+  menus                   = new BehaviorSubject([]);
+  productos               = new BehaviorSubject([]);
+  clientes                = new BehaviorSubject([]);
+  areas                   = new BehaviorSubject([]);
+  usuarios                = new BehaviorSubject([]);
+  mesas                   = new BehaviorSubject([]);
   //Mesa de un area en especifico (varios datos)
-  mesasOfArea = new BehaviorSubject([]);
-  cuentas     = new BehaviorSubject([]);
+  mesasOfArea             = new BehaviorSubject([]);
+  cuentas                 = new BehaviorSubject([]);
+  //Productos pertenecientes a una cuenta
+  cuentasProductos        = new BehaviorSubject([]);
+  cuentasProductosRegular = new BehaviorSubject([]);
+  //Cuentas de una mesa en especifico.
+  cuentasOfMesa           = new BehaviorSubject([]);
   //soemthing like above   = new BehaviorSubject([]);
 
   constructor(
@@ -144,27 +162,27 @@ export class DatabaseService {
   /**********ESTADO ********** */
   checkFlag(){
     return this.database.executeSql('SELECT * FROM flags', []).then(
-      data => {
-        this.flag = {
+      data => { 
+        return {
           flags_id    : data.rows.item(0).flags_id,
           descripcion : data.rows.item(0).descripcion,
           estado      : data.rows.item(0).estado        
-        }
-        return this.flag;
+        };
       }
     )//Final Then
   }
   updateFlag(){
+    this.database.open();
     return this.database.executeSql('UPDATE flags SET estado = "true" WHERE flags_id="1"').then(
       data => {
         console.log('UPDATED!');
-      }
-    )
+      })
   }
   //***********ESTADO************** */
   
   //***********Menus************** */
   loadMenus(){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM menus', []).then(
       data => {
         let menus: menu[] = [];
@@ -187,6 +205,7 @@ export class DatabaseService {
 
   }//loadMenus final (function)
   getMenu(menu_id){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM menus WHERE menu_id = ? ', [menu_id]).then( 
       data => {
         return {
@@ -203,9 +222,9 @@ export class DatabaseService {
 
   //***********PRODUCTOS************** */
   loadProductos(){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM productos', []).then(
       data => {
-        console.log(data);
         let productos: productos[] = [];
         if(data.rows.length > 0){
           for(var i = 0; i < data.rows.length; i++){
@@ -227,15 +246,16 @@ export class DatabaseService {
   }//loadProducto final (function)
 
   getProducto(producto_id){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM productos WHERE productos_id = ? ', [producto_id]).then( 
       data => {
         return {
-              productos_id: data.rows.item(0).productos_id,
-              nombre      : data.rows.item(0).nombre,
-              estado      : data.rows.item(0).estado,
-              precio      : data.rows.item(0).precio,
-              imagen      : data.rows.item(0).imagen
-        }//Final Return
+          productos_id: data.rows.item(0).productos_id,
+          nombre      : data.rows.item(0).nombre,
+          estado      : data.rows.item(0).estado,
+          precio      : data.rows.item(0).precio,
+          imagen      : data.rows.item(0).imagen
+      }//Final Return
     });//Final Then
   }
   getProductos(): Observable<productos[]>{
@@ -245,10 +265,10 @@ export class DatabaseService {
 
   //***********CLIENTES************** */
   loadClientes(){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM clientes', []).then(
       data => {
         let clientes: clientes[] = [];
-
         if(data.rows.length > 0){
           for(var i = 0; i < data.rows.length; i++){
             clientes.push({
@@ -263,11 +283,12 @@ export class DatabaseService {
   }//loadClientes final (function)
 
   getCliente(clientes_id){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM clientes WHERE clientes_id = ? ', [clientes_id]).then( 
-      data => {
+      data => { 
         return {
-              clientes_id: data.rows.item(0).clientes_id,
-              nombre      : data.rows.item(0).nombre
+          clientes_id: data.rows.item(0).clientes_id,
+          nombre      : data.rows.item(0).nombre
         }//Final Return
     });//Final Then
   }
@@ -278,6 +299,7 @@ export class DatabaseService {
   
   //***********AREAS************** */
   loadAreas(){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM areas', []).then(
       data => {
         let areas: areas[] = [];
@@ -299,9 +321,9 @@ export class DatabaseService {
     return this.database.executeSql('SELECT * FROM areas WHERE areas_id = ? ', [areas_id]).then( 
       data => {
         return {
-              areas_id    : data.rows.item(0).areas_id,
-              nombre      : data.rows.item(0).nombre,
-              imagen      : data.rows.item(0).imagen
+          areas_id    : data.rows.item(0).areas_id,
+          nombre      : data.rows.item(0).nombre,
+          imagen      : data.rows.item(0).imagen
         }//Final Return
     });//Final Then
   } 
@@ -312,10 +334,10 @@ export class DatabaseService {
 
   //***********USUARIOS************** */
   loadUsuarios(){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM usuarios', []).then(
       data => {
         let usuarios: usuarios[] = [];
-
         if(data.rows.length > 0){
           for(var i = 0; i < data.rows.length; i++){
             usuarios.push({
@@ -331,6 +353,7 @@ export class DatabaseService {
   }//loadUsuarios final (function)
 
   getUsuario(usuarios_id){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM usuarios WHERE usuarios_id = ? ', [usuarios_id]).then( 
       data => {
         return {
@@ -347,6 +370,7 @@ export class DatabaseService {
 
   //***********MESAS************** */
   loadMesas(){
+    this.database.open();
     var sql_sentence = "SELECT mesas.mesas_id, mesas.capacidad, mesas.estado, usuarios.nombre as usuario, areas.nombre as area, menus.nombre as menu FROM mesas INNER JOIN usuarios ON usuarios.usuarios_id = mesas.usuarios_id INNER JOIN areas    ON areas.areas_id = mesas.areas_id INNER JOIN menus    ON menus.menus_id = mesas.menus_id"
     return this.database.executeSql(sql_sentence, []).then(
       data => {
@@ -370,6 +394,7 @@ export class DatabaseService {
   }//loadMesas final (function)
 
   getMesa(mesas_id){
+    this.database.open();
     var sql_sentence = "SELECT mesas.mesas_id, mesas.capacidad, mesas.estado, usuarios.nombre as usuario, areas.nombre as area, menus.nombre as menu FROM mesas INNER JOIN usuarios ON usuarios.usuarios_id = mesas.usuarios_id INNER JOIN areas    ON areas.areas_id = mesas.areas_id INNER JOIN menus    ON menus.menus_id = mesas.menus_id WHERE mesas_id = ?";
     return this.database.executeSql(sql_sentence, [mesas_id]).then( 
       data => {
@@ -416,10 +441,10 @@ export class DatabaseService {
 
   //***********CUENTAS************** */
   loadCuentas(){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM cuentas', []).then(
       data => {
         let cuentas: cuentas[] = [];
-
         if(data.rows.length > 0){
           for(var i = 0; i < data.rows.length; i++){
             cuentas.push({
@@ -438,6 +463,7 @@ export class DatabaseService {
   }//loadCuentas final (function)
 
   getCuenta(cuentas_id){
+    this.database.open();
     return this.database.executeSql('SELECT * FROM cuentas WHERE cuentas_id = ? ', [cuentas_id]).then( 
       data => {
         return {
@@ -453,5 +479,98 @@ export class DatabaseService {
   getCuentas(): Observable<cuentas[]>{
     return this.cuentas.asObservable();
   } 
+  //Para obtener todas las cuentas de una mesa en especifico.
+  getCuentasOfMesa(mesas_id){
+    this.database.open();
+    let sql_sentence = "SELECT * FROM cuentas WHERE mesas_id=?";
+    return this.database.executeSql(sql_sentence,[mesas_id]).then(
+      data => {
+        let cuentasOfMesa: cuentas[] = [];
+        if(data.rows.length > 0){
+          for(var i = 0; i < data.rows.length; i++){
+            cuentasOfMesa.push({
+              cuentas_id   : data.rows.item(i).cuentas_id,
+              totalMoneda1 : data.rows.item(i).totalMoneda1,
+              totalMoneda2 : data.rows.item(i).totalMoneda2,
+              numeroCuenta : data.rows.item(i).numeroCuenta,
+              mesas_id     : data.rows.item(i).mesas_id,
+              clientes_id  : data.rows.item(i).clientes_id
+            });//push final
+          }//for final
+        this.cuentasOfMesa.next(cuentasOfMesa);
+      }
+    });
+  }
+  getCuentasOfMesaBS(): Observable<cuentas[]>{
+    return this.cuentasOfMesa.asObservable();
+  }
+  
+  /***
+   * Productos seleccionados en una cuenta. (NORMAL)
+   */
+  loadCuentasProductos(cuentas_id){
+    let sql_sentence = "SELECT * FROM cuentas_productos WHERE cuentas_id = ?";
+    return this.database.executeSql(sql_sentence, [cuentas_id]).then(data => {
+      let cuentas_productos:cuentasProductosRegular[] = [];
+      if(data.rows.length > 0){
+        for(var i = 0; i < data.rows.length; i++){
+          cuentas_productos.push({
+            cuentas_productos_id: data.rows.item(i).cuentas_productos_id,
+            cuentas_id          : data.rows.item(i).cuentas_id,
+            productos_id        : data.rows.item(i).productos_id,
+            cantidad            : data.rows.item(i).cantidad
+          })//Final Push
+        }//Final for 
+      }//Final if
+      this.cuentasProductosRegular.next(cuentas_productos);
+    });//Final data
+
+  }
+  getCuentasProductosRegularBS(): Observable<cuentasProductosRegular[]>{
+    return this.cuentasProductosRegular.asObservable();
+  }
+
+
+  /***
+   * Productos seleccionados en una cuenta. (FORMATEADO)
+   */
+  getCuentasProductos(cuentas_id){
+    let sql_sentence = "SELECT cuentas_productos.cuentas_id, productos.productos_id as producto_id, productos.nombre as producto_nombre, productos.precio as producto_precio, cuentas_productos.cantidad FROM cuentas_productos JOIN productos ON productos.productos_id = cuentas_productos.productos_id WHERE cuentas_productos.cuentas_id=?";
+    return this.database.executeSql(sql_sentence,[cuentas_id]).then(
+      data=>{
+        let cuentas_productos:cuentasProductos[] = [];
+        if(data.rows.length > 0){
+          for(var i =0; i<data.rows.length; i++){
+            cuentas_productos.length = 0;
+            cuentas_productos.push({
+              cuentas_id     : data.rows.item(i).cuentas_id,
+              producto_id    : data.rows.item(i).producto_id,
+              producto_nombre: data.rows.item(i).producto_nombre,
+              producto_precio: data.rows.item(i).producto_precio,
+              cantidad       : data.rows.item(i).cantidad
+            });//push final
+          }//for Final
+        }//if Final
+        this.cuentasProductos.next(cuentas_productos);
+      });//then final
+  }
+  /**
+   * Insertar productos en una cuenta en especifico
+   */
+  insertCuentasProductosNew(cuentas_id, productos_id, cantidad){
+    this.database.open();
+    let sql_sentence = "INSERT INTO cuentas_productos (cuentas_id, productos_id, cantidad) VALUES (?,?,?)";
+    return this.database.executeSql(sql_sentence, [cuentas_id,productos_id, cantidad]).then(data=>{
+      console.log("INGRESADO PRODUCTOS NUEVOS EN UNA CUENTA: ",data);
+      this.getCuentasProductos(cuentas_id);
+      this.database.close();
+    }); 
+    
+  }
+
+
+  getCuentasProductosBS(): Observable<cuentasProductos[]>{
+    return this.cuentasProductos.asObservable();
+  }
   //***********CUENTAS************** */
 }

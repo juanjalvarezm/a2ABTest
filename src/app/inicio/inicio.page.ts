@@ -39,12 +39,13 @@ export class InicioPage implements OnInit {
    * Este metodo toma el id del area seleccionada y lo pasa al query y selecciona las mesas que se encuentran en esa area
    */
   goToArea(id){
-    this.db.getArea(id+1).then(area=>{
-      this.db.getMesasOfArea(area.nombre);    //Pasamos el nombre del area para obtener las mesas.
-      this.mesasSelected = true;              //Marcamos que se encontraron las mesas de dicha area.
-      this.db.getMesasofAreaBS() .subscribe(  //Hacemos un arreglo de mesas con la data de cada una.
-        mesas => {
-          this.mesas = mesas;                 /*Se ingresa el arreglo "mesas"(Programado en database.service.ts)
+    this.db.getArea(id+1).then(
+      area=>{
+        this.db.getMesasOfArea(area.nombre);    //Pasamos el nombre del area para obtener las mesas.
+        this.mesasSelected = true;              //Marcamos que se encontraron las mesas de dicha area.
+        this.db.getMesasofAreaBS().subscribe(  //Hacemos un arreglo de mesas con la data de cada una.
+          mesas => {
+            this.mesas = mesas;                 /*Se ingresa el arreglo "mesas"(Programado en database.service.ts)
                                               dentro de el arreglo mesas de esta clase inicio.page.ts para tener toda la data.*/
         }//Final Mesas
       )//Final Subscribe

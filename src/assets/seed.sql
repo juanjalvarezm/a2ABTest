@@ -32,3 +32,7 @@ CREATE TABLE IF NOT EXISTS mesas (mesas_id INTEGER PRIMARY KEY AUTOINCREMENT NOT
 /**********CUENTAS**********/
 CREATE TABLE IF NOT EXISTS cuentas (cuentas_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,totalMoneda1 FLOAT,totalMoneda2 FLOAT,numeroCuenta VARCHAR2,mesas_id INTEGER NOT NULL,clientes_id INTEGER NOT NULL,FOREIGN KEY (mesas_id) REFERENCES mesas(mesas_id),FOREIGN KEY (clientes_id) REFERENCES clientes(clientes_id));
 /**********CUENTAS**********/
+
+/*CUENTAS_PRODUCTOS*/
+CREATE TABLE IF NOT EXISTS cuentas_productos(cuentas_productos_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,cuentas_id INTEGER,productos_id INTEGER,cantidad INTEGER);
+/*CUENTAS_PRODUCTOS*/
