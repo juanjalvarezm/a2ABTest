@@ -7,9 +7,9 @@
 <ion-content>
  <!-- <div>
     <ion-item *ngFor = "let a of menus">
-      {{ m.menu_id }} 
+      {{ m.menu_id }}
       {{ m.nombre }}
-    </ion-item> 
+    </ion-item>
   </div>-->
   <div *ngIf="mesasSelected">
     <ion-item *ngFor="let mesa of mesas; let item = index">
@@ -20,7 +20,7 @@
       </ion-button>
     </ion-item>
   </div>
-  
+
   <div *ngIf="!mesasSelected">
     <h2 id="helpMessage"> Debes seleccionar una de las Areas! <ion-icon name="arrow-round-down"></ion-icon></h2>
   </div>

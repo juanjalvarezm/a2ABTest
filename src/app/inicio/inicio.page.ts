@@ -20,36 +20,25 @@ export class InicioPage implements OnInit {
   ) { }
 
   ngOnInit() {
-     this.db.getDatabaseState().subscribe(
-      ready => {   
+    this.db.getDatabaseState().subscribe(
+      ready => {
         if(ready){  //Sabemos que ya la base de datos esta lista para extraer datos.
-          this.db.getAreas().subscribe(   //Datos de las areas de mesa.
-            area =>{
-              console.log("Areas: ", area); //Debug
-              this.areas = area;
-            }//Final Menu
-          )//Final MenuSubscribe
+          this.areas = this.dataService.getAreasFromDatabase();
         }//Final if
       }//Final Ready
     )//Final subscribe
   }
 
   /**
-   * 
    * Este metodo toma el id del area seleccionada y lo pasa al query y selecciona las mesas que se encuentran en esa area
    */
   goToArea(id){
-    this.db.getArea(id+1).then(
-      area=>{
-        this.db.getMesasOfArea(area.nombre);    //Pasamos el nombre del area para obtener las mesas.
-        this.mesasSelected = true;              //Marcamos que se encontraron las mesas de dicha area.
-        this.db.getMesasofAreaBS().subscribe(  //Hacemos un arreglo de mesas con la data de cada una.
-          mesas => {
-            this.mesas = mesas;                 /*Se ingresa el arreglo "mesas"(Programado en database.service.ts)
-                                              dentro de el arreglo mesas de esta clase inicio.page.ts para tener toda la data.*/
-        }//Final Mesas
-      )//Final Subscribe
-    });//Final Area
+        this.dataService.getMesasOfArea(this.areas[id].nombre).then(data =>{
+          if(data.length > 0){
+            this.mesas = data;
+          }
+        });
+        this.mesasSelected = true;
   }//Final goToArea
 
   goToMesa(id){

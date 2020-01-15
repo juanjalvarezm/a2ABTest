@@ -28,21 +28,38 @@ export class ProductosPage implements OnInit {
     private db         : DatabaseService ) { }
 
   ngOnInit() {
+
     if (this.route.snapshot.data['mesaDetalle'] ){
       this.data = this.route.snapshot.data['mesaDetalle'];
     }
-    this.productsArr = this.pServices.getAllProductsFromMenu();  //Trae la lista de productos (TODOS ELLOS).
-    this.cart = this.pServices.getCart();                        //Trae el carrito de compras.
-    this.cartItemCount = this.pServices.getCartItemCount();      //Trae el conteo de cosas del carrito.
-    //Obtener informacion acerca de los productos que se encuentran actualmente en la CUENTA!
-    this.pServices.setCart(this.data);  //Esta data viene de la cuenta que llamo a la clase productos.
+    //Esta data viene de la cuenta que llamo a la clase productos.
+    //                     .........
+    this.pServices.setCart(this.data).then(data => {
+      if(data.length > 0){
+        for(let i = 0; i < data.length; i++){
+          this.cart.push(data[i]);
+        }
+      }
+    });
+    this.pServices.CartFromDatabase = this.cart;
+    //Trae la lista de productos (TODOS ELLOS).
+    this.productsArr = this.pServices.getAllProductsFromMenu();
+    //Se toma el valor inicial del cartItemCount, el cual esta en "0"
+    this.cartItemCount = this.pServices.getCartItemCount();
+    //Evaluamos todo el carrito guardado en la base de datos
+    for(var i = 0; i < this.cart.length; i++){
+      //Se ingresan las cantidades de cada producto dentro de esta cuenta.
+      if(this.cartItemCount.value == 0){
+        this.cartItemCount.next(this.cart[i].cantidad);
+      }
+    }
+
   }
   addToCart(product){
     this.pServices.addProduct(product, this.data);
   }
   async openCart(){
     //Almacenar dichos datos obtenidos anteriormente.
-    this.cart = this.pServices.getCart();
     let modal = await this.modalCtrl.create({
       component: ProductosModalPage,
       cssClass: 'productos-modal',

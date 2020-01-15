@@ -27,10 +27,9 @@ export class DetalleMesaPage implements OnInit {
   productsArr   : any[] = [];
   detalleMesaArr: any[] = [];
   cuentasOfMesa : cuentas[] = [];
-  cuentas       : any[] = [];
   constructor(
-    private pServices  : ProductServicesService, 
-    private route      : ActivatedRoute, 
+    private pServices  : ProductServicesService,
+    private route      : ActivatedRoute,
     private router     : Router,
     private dataService: DataService,
     private db         : DatabaseService,
@@ -43,12 +42,12 @@ export class DetalleMesaPage implements OnInit {
     this.cart    = this.pServices.cart;
     this.tasaUSD = this.pServices.tasaUSD;
     this.setCuentas();
-    this.presentAlertConfirm();
+    //this.presentAlertConfirm();
   }
   goToProducts(){
-    let cuentas = this.getCuentas();  //Esta data viene de la cuenta que llamo a la clase productos.
-    this.pServices.databaseCart(cuentas[0]);
-    this.dataService.setData(0, cuentas[0]);      //Falta es obtener el id de la cuenta desde la interfaz.(Slides)
+    /*this.pServices.getDatabaseCart();
+    this.pServices.databaseCart(this.cuentasOfMesa[0]);*/
+    this.dataService.setData(0, this.cuentasOfMesa[0]);      //Falta es obtener el id de la cuenta desde la interfaz.(Slides)
     this.router.navigateByUrl('productos/' + 0);
   }
   getTotal(){
@@ -57,8 +56,7 @@ export class DetalleMesaPage implements OnInit {
   getEstadoMesa(){
   }//final metodo
   setCuentas(){
-    this.db.getCuentasOfMesa(this.data.mesas_id);
-    this.db.getCuentasOfMesaBS().subscribe(data=>{
+    this.dataService.getCuentasOfMesas(this.data).then(data => {
       if(data.length > 0){
         this.cuentasOfMesa = data;
       }
@@ -66,8 +64,8 @@ export class DetalleMesaPage implements OnInit {
   }
   getCuentas(){
     return this.cuentasOfMesa
-  }   
-  async presentAlertConfirm() {
+  }
+  /*async presentAlertConfirm() {
     const alert = await this.aController.create({
       header: 'Ingresar a la Mesa' + this.data.mesas_id,
       message: '¿Estas seguro de ingresar a la mesa?',
@@ -82,13 +80,13 @@ export class DetalleMesaPage implements OnInit {
         }, {
           text: 'SI',
           handler: () => {
-            this.getCuentas();
+            this.pServices.databaseCart(this.cuentasOfMesa[0]);
           }
         }
       ]
     });
 
     await alert.present();
-  }
+  }*/
 }
 

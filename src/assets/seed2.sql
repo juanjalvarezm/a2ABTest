@@ -32,7 +32,7 @@ INSERT INTO usuarios (nombre) VALUES ('Mesero01');
 /**********USUARIOS**********/
 
 /**********MESAS**********/
-INSERT INTO mesas(capacidad, estado, usuarios_id, areas_id, menus_id) VALUES (4, 1, 1, 1, 1); 
+INSERT INTO mesas(capacidad, estado, usuarios_id, areas_id, menus_id) VALUES (4, 1, 1, 1, 1);
 /**********MESAS**********/
 
 /**********CUENTAS**********/

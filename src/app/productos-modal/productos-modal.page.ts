@@ -2,9 +2,8 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { productos, ProductServicesService } from '../services/product-services.service';
 import { Router } from '@angular/router';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { cuentasProductos } from '../services/database.service';
+import { cuentasProductos, DatabaseService } from '../services/database.service';
+import { database } from 'firebase';
 
 @Component({
   selector: 'app-productos-modal',
@@ -17,14 +16,14 @@ export class ProductosModalPage implements OnInit {
   cartFromDB = [];
   @Input() cuentas_id:any;
   constructor(
-    private pServices : ProductServicesService, 
-    private modalCtrl: ModalController, 
+    private pServices : ProductServicesService,
+    private modalCtrl: ModalController,
     private router: Router,
-    private afAuth: AngularFireAuth,
-    private db: AngularFirestore) { }
+    private db: DatabaseService) { }
 
   ngOnInit() {
-    this.cart = this.pServices.getCart();
+    this.cart = this.pServices.cart;
+    this.cartFromDB = this.pServices.CartFromDatabase;
   }
   decreaseCartItem(product){
     this.pServices.decreaseProduct(product);
@@ -39,7 +38,8 @@ export class ProductosModalPage implements OnInit {
     //return this.cart.reduce( (i,j) => i + j.precio * j.cantidad, 0 );
   }
   close(){
-    this.pServices.getDatabaseCart();
+    console.log("this.cart", this.cart);
+    console.log("this.cartFromDB", this.cartFromDB);
     this.modalCtrl.dismiss();
   }
 
