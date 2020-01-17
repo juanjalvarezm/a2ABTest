@@ -1,18 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { productos, ProductServicesService } from '../services/product-services.service';
+import { ProductServicesService } from '../services/product-services.service';
 import { DataService } from '../services/data.service';
 import { DatabaseService, cuentas, cuentasProductos} from '../services/database.service';
-import { Observable } from 'rxjs';
-import { async } from '@angular/core/testing';
-import { log } from 'util';
 import { AlertController } from '@ionic/angular';
 
-
-interface detalleMesa{
-  id: number;
-  estado: boolean;
-}
 
 @Component({
   selector: 'app-detalle-mesa',
@@ -22,11 +14,11 @@ interface detalleMesa{
 export class DetalleMesaPage implements OnInit {
   //Variables
   data          : any;
-  cart          : cuentasProductos[];
+  cart          : cuentasProductos[] = [];
   tasaUSD       : number;
-  productsArr   : any[] = [];
-  detalleMesaArr: any[] = [];
-  cuentasOfMesa : cuentas[] = [];
+  productsArr   : any[]              = [];
+  detalleMesaArr: any[]              = [];
+  cuentasOfMesa : cuentas[]          = [];
   constructor(
     private pServices  : ProductServicesService,
     private route      : ActivatedRoute,
@@ -39,54 +31,29 @@ export class DetalleMesaPage implements OnInit {
     if (this.route.snapshot.data['mesaDetalle'] ){
       this.data = this.route.snapshot.data['mesaDetalle'];
     }
-    this.cart    = this.pServices.cart;
     this.tasaUSD = this.pServices.tasaUSD;
-    this.setCuentas();
+    this.dataService.getCuentasOfMesas(this.data).then(data => {
+      if(data.length > 0){
+        this.cuentasOfMesa = data;
+        for(let i = 0; i < data.length; i++){
+          this.pServices.setCart(data[i]).then(data => {
+            this.cart = data;
+            console.log("dataCart DATABASE ", data);
+          });
+        }
+      }
+    });
     //this.presentAlertConfirm();
   }
   goToProducts(){
-    /*this.pServices.getDatabaseCart();
-    this.pServices.databaseCart(this.cuentasOfMesa[0]);*/
     this.dataService.setData(0, this.cuentasOfMesa[0]);      //Falta es obtener el id de la cuenta desde la interfaz.(Slides)
     this.router.navigateByUrl('productos/' + 0);
   }
   getTotal(){
-    //return this.cart.reduce( (i,j) => i + j.producto_precio * j.cantidad, 0 );
+    return this.cart.reduce( (i,j) => i + j.producto_precio * j.cantidad, 0 );
   }
-  getEstadoMesa(){
-  }//final metodo
-  setCuentas(){
-    this.dataService.getCuentasOfMesas(this.data).then(data => {
-      if(data.length > 0){
-        this.cuentasOfMesa = data;
-      }
-    });
+  refreshFactura(){
+    this.ngOnInit();
   }
-  getCuentas(){
-    return this.cuentasOfMesa
-  }
-  /*async presentAlertConfirm() {
-    const alert = await this.aController.create({
-      header: 'Ingresar a la Mesa' + this.data.mesas_id,
-      message: '¿Estas seguro de ingresar a la mesa?',
-      buttons: [
-        {
-          text: 'NO',
-          role: 'cancel',
-          cssClass: 'secondary',
-          handler: back => {
-            this.router.navigateByUrl('/inicio');
-          }
-        }, {
-          text: 'SI',
-          handler: () => {
-            this.pServices.databaseCart(this.cuentasOfMesa[0]);
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }*/
 }
 

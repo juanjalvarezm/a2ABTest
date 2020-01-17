@@ -551,8 +551,7 @@ export class DatabaseService {
       data=>{
         let cuentas_productos:cuentasProductos[] = [];
         if(data.rows.length > 0){
-          for(var i =0; i<data.rows.length; i++){
-            cuentas_productos.length = 0;
+          for(var i =0; i< data.rows.length; i++){
             cuentas_productos.push({
               cuentas_id     : data.rows.item(i).cuentas_id,
               producto_id    : data.rows.item(i).producto_id,

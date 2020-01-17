@@ -16,16 +16,16 @@ import { DatabaseService, cuentasProductos } from '../services/database.service'
 export class ProductosPage implements OnInit {
   //Variables
   productsArr   : any                 = new Array;
-  cart          :  cuentasProductos[] = []
+  public cart   :  cuentasProductos[] = []
   cartItemCount : BehaviorSubject<number>;
   data          : any;
   producto      : productos;
   constructor(
-    private router: Router,
+    private router   : Router,
     private modalCtrl: ModalController,
     private pServices: ProductServicesService,
-    private route: ActivatedRoute,
-    private db         : DatabaseService ) { }
+    private route    : ActivatedRoute,
+    private db       : DatabaseService ) { }
 
   ngOnInit() {
 
@@ -35,13 +35,11 @@ export class ProductosPage implements OnInit {
     //Esta data viene de la cuenta que llamo a la clase productos.
     //                     .........
     this.pServices.setCart(this.data).then(data => {
-      if(data.length > 0){
-        for(let i = 0; i < data.length; i++){
-          this.cart.push(data[i]);
-        }
+      for(let i = 0; i < data.length; i++){
+        this.cart.push(data[i]);
       }
     });
-    this.pServices.CartFromDatabase = this.cart;
+    this.pServices.cart = this.cart;
     //Trae la lista de productos (TODOS ELLOS).
     this.productsArr = this.pServices.getAllProductsFromMenu();
     //Se toma el valor inicial del cartItemCount, el cual esta en "0"

@@ -22,7 +22,7 @@ export class ProductosModalPage implements OnInit {
     private db: DatabaseService) { }
 
   ngOnInit() {
-    this.cart = this.pServices.cart;
+    this.cart       = this.pServices.cart;
     this.cartFromDB = this.pServices.CartFromDatabase;
   }
   decreaseCartItem(product){
@@ -35,11 +35,13 @@ export class ProductosModalPage implements OnInit {
     this.pServices.removeProduct(product);
   }
   getTotal(){
-    //return this.cart.reduce( (i,j) => i + j.precio * j.cantidad, 0 );
+    return this.cart.reduce( (i,j) => i + j.producto_precio * j.cantidad, 0 );
   }
   close(){
-    console.log("this.cart", this.cart);
-    console.log("this.cartFromDB", this.cartFromDB);
+    this.db.deleteCuentasProductos(this.cuentas_id);
+    for(let i = 0; i < this.cart.length; i++){
+      this.db.insertCuentasProductos(this.cart[i].cuentas_id, this.cart[i].producto_id, this.cart[i].cantidad);
+    }
     this.modalCtrl.dismiss();
   }
 
